@@ -1,3 +1,23 @@
+import { motion } from "framer-motion";
+
+const list = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const row = {
+  hidden: { opacity: 0, y: 18 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 function Features() {
   return (
     <section className="features-section" id="features">
@@ -11,50 +31,49 @@ function Features() {
         </h2>
       </div>
 
-      <div className="features-list">
-
-        <div className="feature-item">
+      <motion.div
+        className="features-list"
+        variants={list}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        <motion.div className="feature-item" variants={row}>
           <div className="feature-number">01</div>
 
           <div className="feature-content">
             <h3>DSA & Competitive Programming</h3>
-
             <p>
               Track problems, consistency and preparation progress
               across your coding journey.
             </p>
           </div>
-        </div>
+        </motion.div>
 
-
-        <div className="feature-item">
+        <motion.div className="feature-item" variants={row}>
           <div className="feature-number">02</div>
 
           <div className="feature-content">
             <h3>Web Development</h3>
-
             <p>
               Keep track of your development skills, projects
               and overall progress.
             </p>
           </div>
-        </div>
+        </motion.div>
 
-
-        <div className="feature-item">
+        <motion.div className="feature-item" variants={row}>
           <div className="feature-number">03</div>
 
           <div className="feature-content">
             <h3>Applications & Interviews</h3>
-
             <p>
               Track companies, applications, interview rounds
               and offers in one place.
             </p>
           </div>
-        </div>
-
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

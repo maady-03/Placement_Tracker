@@ -1,7 +1,15 @@
+import { motion } from "framer-motion";
+
 function CTA() {
   return (
     <section className="cta-section">
-      <div className="cta-content">
+      <motion.div
+        className="cta-content"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
         <p className="section-label">START YOUR JOURNEY</p>
 
         <h2>
@@ -18,7 +26,7 @@ function CTA() {
         <a href="/register" className="cta-button">
           Get Started
         </a>
-      </div>
+      </motion.div>
     </section>
   );
 }

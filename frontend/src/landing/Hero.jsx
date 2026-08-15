@@ -1,35 +1,60 @@
-function Hero(){
-    return (
-        <section className="Hero">
-            <div className="hero-content">
+import { motion } from "framer-motion";
 
-                <p className="hero-label">
-                    PLACEMENT PREPARATION, ORGANIZED.
-                </p>
+const container = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.05,
+    },
+  },
+};
 
-                <h1>
-                    Prepare with purpose.
-                    <br/>
-                    Track Your Placement Journey.
-                </h1>
+const item = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+  },
+};
 
-                <p className="hero-description">
-                    One place to track your DSA, development, applications,
-                    interviews and overall placement readiness.
-                </p>
+function Hero() {
+  return (
+    <section className="hero">
+      <motion.div
+        className="hero-content"
+        variants={container}
+        initial="hidden"
+        animate="show"
+      >
+        <motion.p className="hero-label" variants={item}>
+          PLACEMENT PREPARATION, ORGANIZED.
+        </motion.p>
 
-                <div className="hero-actions">
-                    <a href="/register" className="hero-primary-btn">
-                    Start Tracking
-                    </a>
+        <motion.h1 variants={item}>
+          Prepare with purpose.
+          <br />
+          Track Your Placement Journey.
+        </motion.h1>
 
-                    <a href="/login" className="hero-secondary-btn">
-                    Login
-                    </a>                    
-                </div>
-            </div>
-        </section>
-    );
+        <motion.p className="hero-description" variants={item}>
+          One place to track your DSA, development, applications,
+          interviews and overall placement readiness.
+        </motion.p>
+
+        <motion.div className="hero-actions" variants={item}>
+          <a href="/register" className="hero-primary-btn">
+            Start Tracking
+          </a>
+
+          <a href="/login" className="hero-secondary-btn">
+            Login
+          </a>
+        </motion.div>
+      </motion.div>
+    </section>
+  );
 }
 
 export default Hero;
