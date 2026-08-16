@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function CTA() {
   return (
@@ -23,9 +24,9 @@ function CTA() {
           and stay ready for every opportunity.
         </p>
 
-        <a href="/register" className="cta-button">
+        <Link to="/register" className="cta-button">
           Get Started
-        </a>
+        </Link>
       </motion.div>
     </section>
   );
