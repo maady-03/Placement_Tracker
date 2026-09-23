@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../api/config";
 import "./Auth.css";
 
 const contentFade = {
@@ -37,9 +38,6 @@ const field = {
   },
 };
 
-// Future conditional greeting states (user detection not yet implemented):
-// returning: { heading: "Good to see you again.", subtext: "Continue where you left off." }
-// new:       { heading: "Ready for the next step?", subtext: "Your placement journey starts here." }
 const greeting = {
   heading: "Good to see you again.",
   subtext: "Continue where you left off.",
@@ -47,8 +45,66 @@ const greeting = {
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    setErrors({});
+    setFormError("");
+
+    const newErrors = {};
+
+    if (!emailOrUsername.trim()) {
+      newErrors.loginId = "Please enter your email or username.";
+    }
+
+    if (!password) {
+      newErrors.password = "Please enter your password.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email: emailOrUsername,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Invalid credentials.");
+      }
+
+      navigate("/dashboard");
+    } catch (err) {
+      setFormError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="login-page">
@@ -58,13 +114,18 @@ function Login() {
         initial="hidden"
         animate="show"
       >
-        <svg viewBox="0 0 300 380" className="login-visual-svg" preserveAspectRatio="xMidYMid meet">
+        <svg
+          viewBox="0 0 300 380"
+          className="login-visual-svg"
+          preserveAspectRatio="xMidYMid meet"
+        >
           <rect x="30" y="300" width="60" height="60" fill="#dedcd3" />
           <rect x="95" y="240" width="60" height="120" fill="#c9c6ba" />
           <rect x="160" y="180" width="60" height="180" fill="#b3b0a1" />
           <rect x="225" y="120" width="60" height="240" fill="#111111" />
           <circle cx="255" cy="95" r="7" fill="#111111" />
         </svg>
+
         <p className="login-visual-caption">01 — Keep moving</p>
       </motion.div>
 
@@ -77,6 +138,7 @@ function Login() {
         <p className="login-wordmark">Placement Tracker</p>
 
         <h2 className="login-heading">{greeting.heading}</h2>
+
         <p className="login-subtext">{greeting.subtext}</p>
 
         <motion.form
@@ -84,30 +146,65 @@ function Login() {
           variants={fields}
           initial="hidden"
           animate="show"
+          onSubmit={handleLogin}
         >
+          {formError && <p className="auth-form-error">⚠ {formError}</p>}
+
           <motion.div className="login-field" variants={field}>
             <label htmlFor="loginId">Email or username</label>
+
             <input
               id="loginId"
               type="text"
               name="loginId"
               autoComplete="username"
               value={emailOrUsername}
-              onChange={(e) => setEmailOrUsername(e.target.value)}
+              onChange={(e) => {
+                setEmailOrUsername(e.target.value);
+
+                setErrors((previous) => ({
+                  ...previous,
+                  loginId: "",
+                }));
+
+                setFormError("");
+              }}
+              className={errors.loginId ? "input-error" : ""}
             />
+
+            {errors.loginId && (
+              <span className="field-error">{errors.loginId}</span>
+            )}
           </motion.div>
 
           <motion.div className="login-field" variants={field}>
             <label htmlFor="loginPassword">Password</label>
-            <div className="login-field-inline">
+
+            <div
+              className={
+                errors.password
+                  ? "login-field-inline input-error-wrapper"
+                  : "login-field-inline"
+              }
+            >
               <input
                 id="loginPassword"
                 type={showPassword ? "text" : "password"}
                 name="password"
                 autoComplete="current-password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+
+                  setErrors((previous) => ({
+                    ...previous,
+                    password: "",
+                  }));
+
+                  setFormError("");
+                }}
               />
+
               <button
                 type="button"
                 className="login-toggle"
@@ -116,10 +213,19 @@ function Login() {
                 {showPassword ? "Hide" : "Show"}
               </button>
             </div>
+
+            {errors.password && (
+              <span className="field-error">{errors.password}</span>
+            )}
           </motion.div>
 
-          <motion.button type="submit" className="login-submit" variants={field}>
-            Login
+          <motion.button
+            type="submit"
+            className="login-submit"
+            variants={field}
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
           </motion.button>
         </motion.form>
 

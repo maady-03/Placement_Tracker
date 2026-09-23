@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 * {
   margin: 0;
   padding: 0;
@@ -62,4 +64,27 @@ img, svg {
 ::selection {
   background: #111111;
   color: #ffffff;
+}
+
+
+/* Tailwind v4 has no JS config, so class-based dark mode is opted into
+   here. Used only by the dashboard (src/dashboard). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --dsh-bg: #f7f7f5;
+  --dsh-surface: #ffffff;
+  --dsh-ink: #111111;
+  --dsh-muted: #666666;
+  --dsh-border: #e2e2e0;
+  --dsh-accent: #b5651d;
+}
+
+.dark {
+  --dsh-bg: #111111;
+  --dsh-surface: #1a1a1a;
+  --dsh-ink: #f5f5f3;
+  --dsh-muted: #999999;
+  --dsh-border: #2a2a2a;
+  --dsh-accent: #e08a45;
 }

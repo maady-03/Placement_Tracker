@@ -1,6 +1,5 @@
 import Navbar from "./Navbar";
 import Hero from "./Hero";
-import DashboardPreview from "./DashboardPreview";
 import Features from "./Features";
 import HowItWorks from "./HowItWorks";
 import PlacementJourney from "./PlacementJourney";
@@ -12,7 +11,6 @@ function Landing() {
     <>
       <Navbar />
       <Hero />
-      <DashboardPreview />
       <Features />
       <HowItWorks />
       <PlacementJourney />

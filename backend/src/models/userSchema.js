@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 
 const {Schema} =mongoose;
 
-const userSchema =new Schema({
+const userSchema = new Schema({
     firstName:{
         type:String,
         minlength:3,
@@ -49,30 +49,26 @@ const userSchema =new Schema({
         required:true,
         default:'student'
     },
-},
-{
-    timestamps:true
+}, {
+    timestamps: true
 });
 
-userSchema.methods.generateAuthToken =function(){
-    const ans= jwt.sign({
+userSchema.methods.generateAuthToken = function () {
+    return jwt.sign({
         _id:this._id,
         username:this.username,
         email:this.email,
     },
     process.env.JWT_SECRET,
     {
-        expiresIn: 60
-    }
-    );
-    return ans;
-}
+        expiresIn: "1d"
+    });
+};
 
-userSchema.methods.verifyPassword = async function(password){
-    const res = await bcrypt.compare(password, this.password);
-    return res;
-}
+userSchema.methods.verifyPassword = async function (password) {
+    return bcrypt.compare(password, this.password);
+};
 
-const User = mongoose.model('User',userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
