@@ -49,7 +49,29 @@ const userSchema = new Schema({
         required:true,
         default:'student'
     },
-}, {
+
+        // ─── Profile block ───────────────────────────────
+        profile: {
+        college:        { type: String, trim: true },
+        branch:         { type: String, trim: true },
+        graduationYear: { type: Number, min: 2000, max: 2100 },
+
+        cgpa:           { type: Number, min: 0, max: 10 },
+        backlogs:       { type: Number, min: 0 },
+
+        skills:         { type: [String], default: [] },
+        targetRoles:    { type: [String], default: [] },
+
+        links: {
+            github:    { type: String, trim: true },
+            linkedin:  { type: String, trim: true },
+            leetcode:  { type: String, trim: true },
+            portfolio: { type: String, trim: true },
+        },
+
+        about: { type: String, maxlength: 500 },
+    },
+},{
     timestamps: true
 });
 
