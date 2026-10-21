@@ -12,17 +12,29 @@ const create = asyncHandler(async (req, res) => {
     });
 });
 
+// const list = asyncHandler(async (req, res) => {
+//     const applications = await applicationService.listApplications(
+//         req.user._id,
+//         {
+//             status:    req.query.status,
+//             type:      req.query.type,
+//             companyId: req.query.companyId,
+//             search:    req.query.search,
+//         }
+//     );
+//     res.json({ applications });
+// });
+
 const list = asyncHandler(async (req, res) => {
-    const applications = await applicationService.listApplications(
-        req.user._id,
-        {
-            status:    req.query.status,
-            type:      req.query.type,
-            companyId: req.query.companyId,
-            search:    req.query.search,
-        }
-    );
-    res.json({ applications });
+    const result = await applicationService.listApplications(req.user._id, {
+        status:    req.query.status,
+        type:      req.query.type,
+        companyId: req.query.companyId,
+        search:    req.query.search,
+        page:      req.query.page,
+        limit:     req.query.limit,
+    });
+    res.json(result);
 });
 
 const getOne = asyncHandler(async (req, res) => {

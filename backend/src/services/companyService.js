@@ -1,6 +1,9 @@
 const Company = require('../models/companySchema');
 const ApiError = require('../utils/ApiError');
 const { validateCompany } = require('../utils/companyValidator');
+const { Application } = require('../models/applicationSchema');
+
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const ALLOWED_FIELDS = ['name', 'website', 'location', 'industry', 'notes'];
 
@@ -29,14 +32,37 @@ const  createCompany = async (userId, data) => {
     }
 };
 
+// const listCompanies = async (userId, { search } = {}) => {
+//     const query = { createdBy: userId };
+
+//     if (search) {
+//         query.name = { $regex: search, $options: 'i' };
+//     }
+
+//     return Company.find(query).sort({ createdAt: -1 });
+// };
+
 const listCompanies = async (userId, { search } = {}) => {
     const query = { createdBy: userId };
 
     if (search) {
-        query.name = { $regex: search, $options: 'i' };
+        query.name = { $regex: escapeRegex(search), $options: 'i' };
     }
 
-    return Company.find(query).sort({ createdAt: -1 });
+    const [companies, counts] = await Promise.all([
+        Company.find(query).sort({ createdAt: -1 }).lean(),
+        Application.aggregate([
+            { $match: { user: userId } },
+            { $group: { _id: '$company', count: { $sum: 1 } } },
+        ]),
+    ]);
+
+    const countByCompany = new Map(counts.map((c) => [String(c._id), c.count]));
+
+    return companies.map((company) => ({
+        ...company,
+        applicationCount: countByCompany.get(String(company._id)) ?? 0,
+    }));
 };
 
 const getCompany = async (userId, companyId) => {
@@ -82,7 +108,29 @@ const updateCompany = async (userId, companyId, data) => {
     }
 };
 
+// const deleteCompany = async (userId, companyId) => {
+//     const company = await Company.findOneAndDelete({
+//         _id: companyId,
+//         createdBy: userId,
+//     });
+
+//     if (!company) {
+//         throw new ApiError(404, 'Company not found');
+//     }
+//     return company;
+// };
 const deleteCompany = async (userId, companyId) => {
+    const hasApplications = await Application.exists({
+        user: userId,
+        company: companyId,
+    });
+    if (hasApplications) {
+        throw new ApiError(
+            409,
+            'This company has applications. Delete them first.'
+        );
+    }
+
     const company = await Company.findOneAndDelete({
         _id: companyId,
         createdBy: userId,

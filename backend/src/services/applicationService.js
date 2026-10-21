@@ -56,16 +56,51 @@ const createApplication = async (userId, data) => {
     }
 };
 
-const listApplications = async (userId, { status, type, companyId, search } = {}) => {
+// const listApplications = async (userId, { status, type, companyId, search } = {}) => {
+//     const query = { user: userId };
+//     if (status)    query.status = status;
+//     if (type)      query.type = type;
+//     if (companyId) query.company = companyId;
+//     if (search)    query.role = { $regex: search, $options: 'i' };
+
+//     return Application.find(query)
+//         .populate('company', 'name website location industry')
+//         .sort({ createdAt: -1 });
+// };
+
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const listApplications = async (
+    userId,
+    { status, type, companyId, search, page, limit } = {}
+) => {
     const query = { user: userId };
     if (status)    query.status = status;
     if (type)      query.type = type;
     if (companyId) query.company = companyId;
-    if (search)    query.role = { $regex: search, $options: 'i' };
+    if (search)    query.role = { $regex: escapeRegex(search), $options: 'i' };
 
-    return Application.find(query)
-        .populate('company', 'name website location industry')
-        .sort({ createdAt: -1 });
+    const currentPage = Math.max(parseInt(page, 10) || 1, 1);
+    const pageSize = Math.min(Math.max(parseInt(limit, 10) || 10, 1), 50);
+
+    const [applications, total] = await Promise.all([
+        Application.find(query)
+            .populate('company', 'name website location industry')
+            .sort({ createdAt: -1 })
+            .skip((currentPage - 1) * pageSize)
+            .limit(pageSize),
+        Application.countDocuments(query),
+    ]);
+
+    return {
+        applications,
+        pagination: {
+            total,
+            page: currentPage,
+            limit: pageSize,
+            totalPages: Math.ceil(total / pageSize),
+        },
+    };
 };
 
 const getApplication = async (userId, applicationId) => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../api/config";
+import useAuth from "../hooks/useAuth";
 import "./Auth.css";
 
 const contentFade = {
@@ -55,6 +55,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -80,24 +81,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email: emailOrUsername,
-          password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Invalid credentials.");
-      }
-
+      await login(emailOrUsername.trim(), password);
       navigate("/dashboard");
     } catch (err) {
       setFormError(err.message);
