@@ -5,6 +5,7 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Select from "../ui/Select";
 import { APPLICATION_TYPES, STATUSES } from "../../utils/constants";
+import { isValidUrl } from "../../utils/format";
 
 const EMPTY_VALUES = {
   companyId: "",
@@ -30,15 +31,6 @@ const OPTIONAL_FIELDS = [
 
 const NOTES_LIMIT = 1000;
 
-const isValidUrl = (value) => {
-  try {
-    new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
 // Mirrors the backend's validateApplication rules.
 function validate(values) {
   const errors = {};
@@ -55,17 +47,20 @@ function validate(values) {
   return errors;
 }
 
-function buildPayload(values) {
+function buildPayload(values, isEdit) {
   const payload = {
     companyId: values.companyId,
     role: values.role.trim(),
     type: values.type,
-    status: values.status,
   };
+
+  // Status changes go through the status changer so they hit the timeline.
+  if (!isEdit) payload.status = values.status;
 
   for (const key of OPTIONAL_FIELDS) {
     const value = values[key].trim();
     if (value) payload[key] = value;
+    else if (isEdit) payload[key] = null; // lets an emptied field clear on the server
   }
 
   return payload;
@@ -80,6 +75,7 @@ function ApplicationForm({
   isSubmitting = false,
   serverError = "",
   cancelTo = "/applications",
+  isEdit = false,
   onSubmit,
 }) {
   const [values, setValues] = useState({ ...EMPTY_VALUES, ...initialValues });
@@ -101,7 +97,7 @@ function ApplicationForm({
     setErrors(found);
     if (Object.keys(found).length > 0) return;
 
-    onSubmit(buildPayload(values));
+    onSubmit(buildPayload(values, isEdit));
   };
 
   return (
@@ -165,31 +161,35 @@ function ApplicationForm({
             />
           </div>
 
-          <Select
-            label="Type"
-            name="type"
-            value={values.type}
-            onChange={handleChange}
-          >
-            {Object.entries(APPLICATION_TYPES).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </Select>
+          <div className={isEdit ? "sm:col-span-2" : ""}>
+            <Select
+              label="Type"
+              name="type"
+              value={values.type}
+              onChange={handleChange}
+            >
+              {Object.entries(APPLICATION_TYPES).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </Select>
+          </div>
 
-          <Select
-            label="Status"
-            name="status"
-            value={values.status}
-            onChange={handleChange}
-          >
-            {Object.entries(STATUSES).map(([key, { label }]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </Select>
+          {!isEdit && (
+            <Select
+              label="Status"
+              name="status"
+              value={values.status}
+              onChange={handleChange}
+            >
+              {Object.entries(STATUSES).map(([key, { label }]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </Select>
+          )}
 
           <Input
             label="Applied date"

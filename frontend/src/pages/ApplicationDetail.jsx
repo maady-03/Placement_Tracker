@@ -1,7 +1,12 @@
-import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, FileX } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, FileX, Pencil, Trash2 } from "lucide-react";
 import useApplication from "../hooks/useApplication";
-import { changeApplicationStatus } from "../api/applications";
+import {
+  changeApplicationStatus,
+  deleteApplication,
+} from "../api/applications";
+import Modal from "../components/ui/Modal";
 import Card from "../components/ui/Card";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -42,6 +47,8 @@ function DetailSkeleton() {
 
 function ApplicationDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const {
     application,
     isLoading,
@@ -51,9 +58,26 @@ function ApplicationDetail() {
     replaceApplication,
   } = useApplication(id);
 
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
   const handleStatusChange = async (payload) => {
     const data = await changeApplicationStatus(id, payload);
     replaceApplication(data.application);
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    setDeleteError("");
+
+    try {
+      await deleteApplication(id);
+      navigate("/applications");
+    } catch (err) {
+      setDeleteError(err.message);
+      setIsDeleting(false);
+    }
   };
 
   if (isLoading) return <DetailSkeleton />;
@@ -113,11 +137,35 @@ function ApplicationDetail() {
           Applications
         </Link>
 
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold text-ink">{role}</h1>
-          <Badge status={status} />
+        <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-2xl font-semibold text-ink">{role}</h1>
+              <Badge status={status} />
+            </div>
+            <p className="mt-1 text-sm text-ink-muted">{company?.name}</p>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              as={Link}
+              to={`/applications/${id}/edit`}
+              variant="secondary"
+              size="sm"
+            >
+              <Pencil size={14} />
+              Edit
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => setConfirmDelete(true)}
+            >
+              <Trash2 size={14} />
+              Delete
+            </Button>
+          </div>
         </div>
-        <p className="mt-1 text-sm text-ink-muted">{company?.name}</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -178,6 +226,32 @@ function ApplicationDetail() {
           <CompanyInfoCard company={company} />
         </div>
       </div>
+
+      <Modal
+        open={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        title="Delete application"
+      >
+        <p className="text-sm text-ink-muted">
+          Delete <span className="font-medium text-ink">{role}</span> at{" "}
+          {company?.name}? This cannot be undone.
+        </p>
+
+        {deleteError && (
+          <p className="mt-4 rounded-lg bg-status-rejected/15 px-3 py-2 text-sm text-status-rejected">
+            {deleteError}
+          </p>
+        )}
+
+        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+          <Button variant="secondary" onClick={() => setConfirmDelete(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" disabled={isDeleting} onClick={handleDelete}>
+            {isDeleting ? "Deleting..." : "Delete"}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

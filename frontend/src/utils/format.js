@@ -30,3 +30,15 @@ export const formatDaysLeft = (value) => {
 
 export const toHref = (url) =>
   /^https?:\/\//i.test(url) ? url : `https://${url}`;
+
+export const isValidUrl = (value) => {
+  try {
+    new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// ISO string -> value for <input type="date">
+export const toDateInputValue = (value) => (value ? value.slice(0, 10) : "");
