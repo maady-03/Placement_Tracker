@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../api/config";
 import { motion } from "framer-motion";
+import useAuth from "../hooks/useAuth";
 import "./Auth.css";
 
 const container = {
@@ -48,6 +49,7 @@ function Register() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const strength = Math.min(
     3,
@@ -176,7 +178,12 @@ function Register() {
         );
       }
 
-      navigate("/login");
+            try {
+        await login(formData.email, password);
+        navigate("/onboarding");
+      } catch {
+        navigate("/login");
+      }
     } catch (err) {
       setFormError(err.message);
     } finally {

@@ -3,18 +3,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import AuthProvider from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProfileGate from "./components/ProfileGate";
 import AppLayout from "./layouts/AppLayout";
+import OnboardingLayout from "./layouts/OnboardingLayout";
 import Card from "./components/ui/Card";
 
 import Landing from "./landing/Landing";
 import Register from "./auth/Register";
 import Login from "./auth/Login";
+import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Applications from "./pages/Applications";
 import NewApplication from "./pages/NewApplication";
 import ApplicationDetail from "./pages/ApplicationDetail";
-import Companies from "./pages/Companies";
 import EditApplication from "./pages/EditApplication";
+import Companies from "./pages/Companies";
 
 // Temporary: each placeholder is replaced by a real page as we build it.
 function Placeholder({ title }) {
@@ -38,29 +41,38 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           <Route element={<ProtectedRoute />}>
-            <Route element={<AppLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/applications" element={<Applications />} />
-              <Route path="/applications/new" element={<NewApplication />} />
-              <Route path="/applications/:id" element={<ApplicationDetail />} />
-              <Route
-                path="/applications/:id/edit"
-                element={<EditApplication />}
-              />
-              <Route path="/companies" element={<Companies />} />
-              <Route
-                path="/dsa-stats"
-                element={<Placeholder title="DSA Stats" />}
-              />
-              <Route path="/skills" element={<Placeholder title="Skills" />} />
-              <Route
-                path="/profile"
-                element={<Placeholder title="Preview" />}
-              />
-              <Route
-                path="/settings"
-                element={<Placeholder title="Settings" />}
-              />
+            <Route element={<OnboardingLayout />}>
+              <Route path="/onboarding" element={<Onboarding />} />
+            </Route>
+
+            <Route element={<ProfileGate />}>
+              <Route element={<AppLayout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/applications" element={<Applications />} />
+                <Route path="/applications/new" element={<NewApplication />} />
+                <Route path="/applications/:id" element={<ApplicationDetail />} />
+                <Route
+                  path="/applications/:id/edit"
+                  element={<EditApplication />}
+                />
+                <Route path="/companies" element={<Companies />} />
+                <Route
+                  path="/dsa-stats"
+                  element={<Placeholder title="DSA Stats" />}
+                />
+                <Route
+                  path="/skills"
+                  element={<Placeholder title="Skills" />}
+                />
+                <Route
+                  path="/profile"
+                  element={<Placeholder title="Preview" />}
+                />
+                <Route
+                  path="/settings"
+                  element={<Placeholder title="Settings" />}
+                />
+              </Route>
             </Route>
           </Route>
         </Routes>
