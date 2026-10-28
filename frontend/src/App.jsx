@@ -18,6 +18,7 @@ import NewApplication from "./pages/NewApplication";
 import ApplicationDetail from "./pages/ApplicationDetail";
 import EditApplication from "./pages/EditApplication";
 import Companies from "./pages/Companies";
+import DsaStats from "./pages/DsaStats";
 
 // Temporary: each placeholder is replaced by a real page as we build it.
 function Placeholder({ title }) {
@@ -56,10 +57,7 @@ function App() {
                   element={<EditApplication />}
                 />
                 <Route path="/companies" element={<Companies />} />
-                <Route
-                  path="/dsa-stats"
-                  element={<Placeholder title="DSA Stats" />}
-                />
+                <Route path="/dsa-stats" element={<DsaStats />} />
                 <Route
                   path="/skills"
                   element={<Placeholder title="Skills" />}

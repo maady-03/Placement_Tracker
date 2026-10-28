@@ -36,3 +36,19 @@ export const APPLICATION_TYPES = {
   internship: "Internship",
   "full-time": "Full-time",
 };
+
+export const PLATFORMS = {
+  leetcode: { label: "LeetCode", badge: "bg-status-oa/15 text-status-oa" },
+  codeforces: {
+    label: "Codeforces",
+    badge: "bg-status-applied/15 text-status-applied",
+  },
+  codechef: {
+    label: "CodeChef",
+    badge: "bg-status-interview/15 text-status-interview",
+  },
+  gfg: {
+    label: "GeeksforGeeks",
+    badge: "bg-status-offer/15 text-status-offer",
+  },
+};
