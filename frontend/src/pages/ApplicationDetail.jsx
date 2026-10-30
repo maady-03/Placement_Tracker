@@ -116,6 +116,7 @@ function ApplicationDetail() {
     company,
     role,
     type,
+    location,
     status,
     appliedDate,
     deadline,
@@ -174,9 +175,10 @@ function ApplicationDetail() {
             <h2 className="text-sm font-semibold text-ink">Details</h2>
 
             <dl className="mt-5 grid gap-5 sm:grid-cols-2">
-              <Detail label="Type">
+                            <Detail label="Type">
                 <span className="capitalize">{type}</span>
               </Detail>
+              <Detail label="Location">{location || "—"}</Detail>
               <Detail label="Applied">
                 <span className="font-mono">{formatDate(appliedDate)}</span>
               </Detail>

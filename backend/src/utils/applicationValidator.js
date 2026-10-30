@@ -6,6 +6,11 @@ function validateApplication(data, { partial = false } = {}) {
         throw new Error('Invalid application payload');
     }
 
+    // ADDED: Block timeline from being edited manually
+    if (data.timeline !== undefined) {
+        throw new Error('Timeline cannot be edited directly. Use the status update endpoint.');
+    }
+
     if (!partial) {
         if (!data.companyId || typeof data.companyId !== 'string') {
             throw new Error('companyId is required');
@@ -30,6 +35,12 @@ function validateApplication(data, { partial = false } = {}) {
 
     if (data.status !== undefined && !APPLICATION_STATUS.includes(data.status)) {
         throw new Error(`Status must be one of: ${APPLICATION_STATUS.join(', ')}`);
+    }
+
+    if (data.location !== undefined && data.location !== null) {
+        if (typeof data.location !== 'string') {
+            throw new Error('Location must be a string');
+        }
     }
 
     if (data.jobLink !== undefined && data.jobLink !== null && data.jobLink !== '') {

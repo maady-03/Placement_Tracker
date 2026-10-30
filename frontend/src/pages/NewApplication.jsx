@@ -5,6 +5,14 @@ import useCompanies from "../hooks/useCompanies";
 import { createApplication } from "../api/applications";
 import ApplicationForm from "../components/applications/ApplicationForm";
 
+// Local date as YYYY-MM-DD (toISOString alone would use the UTC date).
+const todayInputValue = () => {
+  const now = new Date();
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    .toISOString()
+    .split("T")[0];
+};
+
 function NewApplication() {
   const navigate = useNavigate();
   const { companies, isLoading, error } = useCompanies();
@@ -48,6 +56,7 @@ function NewApplication() {
         companies={companies}
         isLoadingCompanies={isLoading}
         companiesError={error}
+        initialValues={{ appliedDate: todayInputValue() }}
         isSubmitting={isSubmitting}
         serverError={serverError}
         submitLabel="Create application"

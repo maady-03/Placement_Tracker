@@ -18,3 +18,5 @@ export const updateApplication = (id, payload) =>
 
 export const deleteApplication = (id) =>
   apiClient.delete(`/api/applications/${id}`);
+
+export const getRoles = () => apiClient.get("/api/applications/roles");

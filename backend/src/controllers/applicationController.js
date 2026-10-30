@@ -1,5 +1,6 @@
 const asyncHandler = require('../utils/asyncHandler');
 const applicationService = require('../services/applicationService');
+const { PREDEFINED_ROLES } = require('../utils/constants'); // <--- ADDED
 
 const create = asyncHandler(async (req, res) => {
     const application = await applicationService.createApplication(
@@ -12,19 +13,6 @@ const create = asyncHandler(async (req, res) => {
     });
 });
 
-// const list = asyncHandler(async (req, res) => {
-//     const applications = await applicationService.listApplications(
-//         req.user._id,
-//         {
-//             status:    req.query.status,
-//             type:      req.query.type,
-//             companyId: req.query.companyId,
-//             search:    req.query.search,
-//         }
-//     );
-//     res.json({ applications });
-// });
-
 const list = asyncHandler(async (req, res) => {
     const result = await applicationService.listApplications(req.user._id, {
         status:    req.query.status,
@@ -35,6 +23,11 @@ const list = asyncHandler(async (req, res) => {
         limit:     req.query.limit,
     });
     res.json(result);
+});
+
+// ADDED THIS FUNCTION
+const getRoles = asyncHandler(async (req, res) => {
+    res.json({ roles: PREDEFINED_ROLES });
 });
 
 const getOne = asyncHandler(async (req, res) => {
@@ -77,4 +70,12 @@ const remove = asyncHandler(async (req, res) => {
     res.json({ message: 'Application deleted successfully.' });
 });
 
-module.exports = { create, list, getOne, update, changeStatus, remove };
+module.exports = { 
+    create, 
+    list, 
+    getRoles, // <--- EXPORTED
+    getOne, 
+    update, 
+    changeStatus, 
+    remove 
+};

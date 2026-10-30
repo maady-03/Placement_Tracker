@@ -18,7 +18,9 @@ import NewApplication from "./pages/NewApplication";
 import ApplicationDetail from "./pages/ApplicationDetail";
 import EditApplication from "./pages/EditApplication";
 import Companies from "./pages/Companies";
+import CompanyDetail from "./pages/CompanyDetail";
 import DsaStats from "./pages/DsaStats";
+import Contests from "./pages/Contests";
 
 // Temporary: each placeholder is replaced by a real page as we build it.
 function Placeholder({ title }) {
@@ -57,7 +59,9 @@ function App() {
                   element={<EditApplication />}
                 />
                 <Route path="/companies" element={<Companies />} />
+                <Route path="/companies/:id" element={<CompanyDetail />} />
                 <Route path="/dsa-stats" element={<DsaStats />} />
+                <Route path="/contests" element={<Contests />} />
                 <Route
                   path="/skills"
                   element={<Placeholder title="Skills" />}

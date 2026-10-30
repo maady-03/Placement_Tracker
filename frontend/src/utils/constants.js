@@ -38,17 +38,24 @@ export const APPLICATION_TYPES = {
 };
 
 export const PLATFORMS = {
-  leetcode: { label: "LeetCode", badge: "bg-status-oa/15 text-status-oa" },
+  leetcode: {
+    label: "LeetCode",
+    badge: "bg-status-oa/15 text-status-oa",
+    block: "border-status-oa bg-status-oa/15",
+  },
   codeforces: {
     label: "Codeforces",
     badge: "bg-status-applied/15 text-status-applied",
+    block: "border-status-applied bg-status-applied/15",
   },
   codechef: {
     label: "CodeChef",
     badge: "bg-status-interview/15 text-status-interview",
+    block: "border-status-interview bg-status-interview/15",
   },
   gfg: {
     label: "GeeksforGeeks",
     badge: "bg-status-offer/15 text-status-offer",
+    block: "border-status-offer bg-status-offer/15",
   },
 };

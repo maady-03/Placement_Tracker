@@ -66,7 +66,8 @@ const getUpcomingContests = asyncHandler(async (req, res) => {
                 name: c.name,
                 platform: 'codeforces',
                 startTime: new Date(c.startTimeSeconds * 1000).toISOString(),
-                url: `https://codeforces.com/contest/${c.id}`
+                url: `https://codeforces.com/contest/${c.id}`,
+                durationMinutes: Number.isFinite(c.durationSeconds) ? Math.round(c.durationSeconds / 60) : null
             }));
     } catch (e) { console.error('CF Contest Fetch Failed', e.message); }
 
@@ -83,7 +84,8 @@ const getUpcomingContests = asyncHandler(async (req, res) => {
                 name: c.title,
                 platform: 'leetcode',
                 startTime: new Date(c.startTime * 1000).toISOString(),
-                url: `https://leetcode.com/contest/${c.titleSlug}`
+                url: `https://leetcode.com/contest/${c.titleSlug}`,
+                durationMinutes: Number.isFinite(c.duration) ? Math.round(c.duration / 60) : null
             }));
         }
     } catch (e) { console.error('LC Contest Fetch Failed', e.message); }
@@ -97,7 +99,8 @@ const getUpcomingContests = asyncHandler(async (req, res) => {
                 name: c.contest_name,
                 platform: 'codechef',
                 startTime: new Date(c.contest_start_date_iso).toISOString(),
-                url: `https://www.codechef.com/contests`
+                url: `https://www.codechef.com/contests`,
+                durationMinutes: Number.isFinite(Number(c.contest_duration)) ? Number(c.contest_duration) : null
             }));
         }
     } catch (e) { console.error('CC Contest Fetch Failed', e.message); }

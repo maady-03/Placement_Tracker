@@ -1,99 +1,124 @@
-import { motion } from "framer-motion";
+import { motion, MotionConfig } from "framer-motion";
 
-const container = {
+const EASE = [0.16, 1, 0.3, 1];
+
+const STAGES = [
+  {
+    number: "01",
+    title: "Preparation",
+    text: "DSA, competitive programming and web development.",
+  },
+  {
+    number: "02",
+    title: "Application",
+    text: "Companies, applications and application status.",
+  },
+  {
+    number: "03",
+    title: "Interview",
+    text: "Interview rounds, progress and outcomes.",
+  },
+  {
+    number: "04",
+    title: "Offer",
+    text: "Track your offers and placement outcomes.",
+  },
+];
+
+const list = {
   hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.15,
-    },
-  },
+  show: { transition: { staggerChildren: 0.25 } },
 };
 
-const stage = {
-  hidden: { opacity: 0, x: -16 },
-  show: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
-  },
+const card = {
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
 };
 
-const connector = {
-  hidden: { scaleX: 0, opacity: 0 },
-  show: {
-    scaleX: 1,
-    opacity: 1,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
-  },
+const stripe = {
+  hidden: { scaleX: 0 },
+  show: { scaleX: 1, transition: { duration: 0.9, delay: 0.3, ease: "easeInOut" } },
 };
 
 function PlacementJourney() {
   return (
-    <section className="placement-journey-section" id="about">
-      <div className="placement-journey-heading">
-        <p className="section-label">YOUR PLACEMENT JOURNEY</p>
-
-        <h2>
-          From preparation
-          <br />
-          to placement.
-        </h2>
-      </div>
-
-      <motion.div
-        className="journey"
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.3 }}
+    <MotionConfig reducedMotion="user">
+      <section
+        className="relative isolate overflow-hidden bg-slate-950 px-[8%] py-28 text-white sm:py-36"
+        id="about"
       >
-        <motion.div className="journey-stage" variants={stage}>
-          <span className="journey-number">01</span>
-          <div className="journey-dot"></div>
-          <h3>Preparation</h3>
-          <p>
-            DSA, competitive programming
-            and web development.
-          </p>
-        </motion.div>
+        <div className="absolute -bottom-40 right-0 -z-10 h-96 w-[60%] rounded-full bg-accent/15 blur-3xl" />
 
-        <motion.div className="journey-connector" variants={connector}></motion.div>
+        <div className="mx-auto max-w-6xl">
+          <motion.div
+            className="mb-16 max-w-2xl"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.6, ease: EASE }}
+          >
+            <p className="text-xs font-semibold tracking-[0.2em] text-white/60">
+              YOUR PLACEMENT JOURNEY
+            </p>
 
-        <motion.div className="journey-stage" variants={stage}>
-          <span className="journey-number">02</span>
-          <div className="journey-dot"></div>
-          <h3>Application</h3>
-          <p>
-            Companies, applications and
-            application status.
-          </p>
-        </motion.div>
+            <h2 className="mt-5 text-4xl font-bold leading-[1.12] tracking-tight sm:text-5xl">
+              From preparation
+              <br />
+              to placement.
+            </h2>
+          </motion.div>
 
-        <motion.div className="journey-connector" variants={connector}></motion.div>
+          <motion.div
+            className="grid gap-4 md:grid-cols-4"
+            variants={list}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.25 }}
+          >
+            {STAGES.map(({ number, title, text }, i) => {
+              const isLast = i === STAGES.length - 1;
 
-        <motion.div className="journey-stage" variants={stage}>
-          <span className="journey-number">03</span>
-          <div className="journey-dot"></div>
-          <h3>Interview</h3>
-          <p>
-            Interview rounds, progress
-            and outcomes.
-          </p>
-        </motion.div>
+              return (
+                <motion.div
+                  key={number}
+                  variants={card}
+                  className={`relative overflow-hidden rounded-2xl border p-6 backdrop-blur-md ${
+                    isLast
+                      ? "border-accent/50 bg-accent/10"
+                      : "border-white/10 bg-white/5"
+                  }`}
+                >
+                  <motion.span
+                    variants={stripe}
+                    className="absolute inset-x-0 top-0 h-0.5 origin-left bg-accent"
+                  />
 
-        <motion.div className="journey-connector" variants={connector}></motion.div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs text-white/40">
+                      {number}
+                    </span>
+                    <span
+                      className={`h-2.5 w-2.5 rounded-full ${
+                        isLast
+                          ? "bg-accent shadow-[0_0_14px_rgba(245,130,32,0.9)]"
+                          : "bg-white/50"
+                      }`}
+                    />
+                  </div>
 
-        <motion.div className="journey-stage" variants={stage}>
-          <span className="journey-number">04</span>
-          <div className="journey-dot"></div>
-          <h3>Offer</h3>
-          <p>
-            Track your offers and
-            placement outcomes.
-          </p>
-        </motion.div>
-      </motion.div>
-    </section>
+                  <h3 className="mt-8 text-xl font-semibold tracking-tight">
+                    {title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-400">
+                    {text}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </div>
+      </section>
+    </MotionConfig>
   );
 }
 

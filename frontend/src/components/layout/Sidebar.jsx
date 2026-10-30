@@ -7,6 +7,7 @@ import {
   UserCircle,
   Settings,
   LogOut,
+  CalendarClock,
 } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 import SidebarItem from "./SidebarItem";
@@ -24,6 +25,7 @@ const NAV_SECTIONS = [
     title: "Prep",
     items: [
       { to: "/dsa-stats", icon: Code2, label: "DSA Stats" },
+      { to: "/contests", icon: CalendarClock, label: "Contests" },
       { to: "/skills", icon: Wrench, label: "Skills" },
     ],
   },

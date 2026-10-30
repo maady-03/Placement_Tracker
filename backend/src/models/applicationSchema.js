@@ -44,7 +44,9 @@ const applicationSchema = new Schema({
         default: 'wishlist',
         index: true,
     },
-    appliedDate:   { type: Date },
+    location: { type: String, trim: true },
+    // ADDED default: Date.now HERE
+    appliedDate:   { type: Date, default: Date.now }, 
     deadline:      { type: Date },
     source:        { type: String, trim: true },
     jobLink:       { type: String, trim: true },

@@ -16,8 +16,6 @@ import ActivityHeatmap from "../components/dsa/ActivityHeatmap";
 import PlatformsModal from "../components/dsa/PlatformsModal";
 import PlatformCard from "../components/dsa/PlatformCard";
 import Skeleton from "../components/ui/Skeleton";
-import useUpcomingContests from "../hooks/useUpcomingContests";
-import UpcomingContests from "../components/dsa/UpcomingContests";
 import useRecentSubmissions from "../hooks/useRecentSubmissions";
 import RecentSubmissions from "../components/dsa/RecentSubmissions";
 import TopicChart from "../components/dsa/TopicChart";
@@ -33,8 +31,6 @@ const PLATFORM_LIST = [
 function DsaStats() {
   const { stats, isLoading, error, refetch, sync, isSyncing, syncError } =
     useDsaStats();
-
-   const contests = useUpcomingContests();
    const recent = useRecentSubmissions();
   const [platformsOpen, setPlatformsOpen] = useState(false);
 
@@ -146,16 +142,11 @@ function DsaStats() {
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <UpcomingContests
-          contests={contests.contests}
-          isLoading={contests.isLoading}
-          error={contests.error}
-        />
         <RecentSubmissions
-          submissions={recent.submissions}
-          isLoading={recent.isLoading}
-          error={recent.error}
-        />
+        submissions={recent.submissions}
+        isLoading={recent.isLoading}
+        error={recent.error}
+      />
       </div>
 
       <PlatformsModal

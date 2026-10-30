@@ -8,6 +8,7 @@ const {
 
 const ALLOWED_FIELDS = [
     'role', 'type', 'status',
+    'location', // <--- ADDED THIS LINE
     'appliedDate', 'deadline', 'source',
     'jobLink', 'resumeVersion', 'notes',
 ];
@@ -56,18 +57,6 @@ const createApplication = async (userId, data) => {
     }
 };
 
-// const listApplications = async (userId, { status, type, companyId, search } = {}) => {
-//     const query = { user: userId };
-//     if (status)    query.status = status;
-//     if (type)      query.type = type;
-//     if (companyId) query.company = companyId;
-//     if (search)    query.role = { $regex: search, $options: 'i' };
-
-//     return Application.find(query)
-//         .populate('company', 'name website location industry')
-//         .sort({ createdAt: -1 });
-// };
-
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const listApplications = async (
@@ -85,7 +74,7 @@ const listApplications = async (
 
     const [applications, total] = await Promise.all([
         Application.find(query)
-            .populate('company', 'name website location industry')
+            .populate('company', 'name website logo industry')
             .sort({ createdAt: -1 })
             .skip((currentPage - 1) * pageSize)
             .limit(pageSize),
@@ -106,7 +95,7 @@ const listApplications = async (
 const getApplication = async (userId, applicationId) => {
     const app = await Application
         .findOne({ _id: applicationId, user: userId })
-        .populate('company', 'name website location industry');
+        .populate('company', 'name website logo industry');
 
     if (!app) throw new ApiError(404, 'Application not found');
     return app;
@@ -133,7 +122,7 @@ const updateApplication = async (userId, applicationId, data) => {
         { _id: applicationId, user: userId },
         { $set: updates },
         { new: true, runValidators: true }
-    ).populate('company', 'name website location industry');
+    ).populate('company', 'name website logo industry');
 
     if (!app) throw new ApiError(404, 'Application not found');
     return app;
@@ -157,7 +146,7 @@ const changeStatus = async (userId, applicationId, { status, note }) => {
     });
 
     await app.save();
-    return app.populate('company', 'name website location industry');
+    return app.populate('company', 'name website logo industry');
 };
 
 const deleteApplication = async (userId, applicationId) => {

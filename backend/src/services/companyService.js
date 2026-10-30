@@ -5,9 +5,21 @@ const { Application } = require('../models/applicationSchema');
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const ALLOWED_FIELDS = ['name', 'website', 'location', 'industry', 'notes'];
+// REMOVED 'location' from this array
+const ALLOWED_FIELDS = ['name', 'logo', 'website', 'industry', 'notes']; 
 
-const  createCompany = async (userId, data) => {
+const generateLogoUrl = (website) => {
+    if (!website) return null;
+    try {
+        const urlStr = website.startsWith('http') ? website : `https://${website}`;
+        const domain = new URL(urlStr).hostname.replace('www.', '');
+        return `https://img.logo.dev/${domain}?token=${process.env.LOGO_DEV_TOKEN}&fallback=monogram`;
+    } catch (err) {
+        return null;
+    }
+};
+
+const createCompany = async (userId, data) => {
     try {
         validateCompany(data);
     } catch (err) {
@@ -17,6 +29,10 @@ const  createCompany = async (userId, data) => {
     const payload = { createdBy: userId };
     for (const key of ALLOWED_FIELDS) {
         if (data[key] !== undefined) payload[key] = data[key];
+    }
+
+    if (payload.website && !payload.logo) {
+        payload.logo = generateLogoUrl(payload.website);
     }
 
     try {
@@ -31,16 +47,6 @@ const  createCompany = async (userId, data) => {
         throw err;
     }
 };
-
-// const listCompanies = async (userId, { search } = {}) => {
-//     const query = { createdBy: userId };
-
-//     if (search) {
-//         query.name = { $regex: search, $options: 'i' };
-//     }
-
-//     return Company.find(query).sort({ createdAt: -1 });
-// };
 
 const listCompanies = async (userId, { search } = {}) => {
     const query = { createdBy: userId };
@@ -85,6 +91,10 @@ const updateCompany = async (userId, companyId, data) => {
         if (data[key] !== undefined) updates[key] = data[key];
     }
 
+    if (updates.website && !updates.logo) {
+        updates.logo = generateLogoUrl(updates.website);
+    }
+
     try {
         const company = await Company.findOneAndUpdate(
             { _id: companyId, createdBy: userId },
@@ -108,17 +118,6 @@ const updateCompany = async (userId, companyId, data) => {
     }
 };
 
-// const deleteCompany = async (userId, companyId) => {
-//     const company = await Company.findOneAndDelete({
-//         _id: companyId,
-//         createdBy: userId,
-//     });
-
-//     if (!company) {
-//         throw new ApiError(404, 'Company not found');
-//     }
-//     return company;
-// };
 const deleteCompany = async (userId, companyId) => {
     const hasApplications = await Application.exists({
         user: userId,

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import HeroShowcase from "./HeroShowcase";
 
 const container = {
   hidden: {},
@@ -21,39 +22,43 @@ const item = {
 
 function Hero() {
   return (
-    <section className="hero">
-      <motion.div
-        className="hero-content"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
-        <motion.p className="hero-label" variants={item}>
-          PLACEMENT PREPARATION, ORGANIZED.
-        </motion.p>
+    <>
+      <section className="hero">
+        <motion.div
+          className="hero-content"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.p className="hero-label" variants={item}>
+            PLACEMENT PREPARATION, ORGANIZED.
+          </motion.p>
 
-        <motion.h1 variants={item}>
-          Prepare with purpose.
-          <br />
-          Track Your Placement Journey.
-        </motion.h1>
+          <motion.h1 variants={item}>
+            Prepare with purpose.
+            <br />
+            Track Your Placement Journey.
+          </motion.h1>
 
-        <motion.p className="hero-description" variants={item}>
-          One place to track your DSA, development, applications,
-          interviews and overall placement readiness.
-        </motion.p>
+          <motion.p className="hero-description" variants={item}>
+            One place to track your DSA, development, applications,
+            interviews and overall placement readiness.
+          </motion.p>
 
-        <motion.div className="hero-actions" variants={item}>
-          <a href="/register" className="hero-primary-btn">
-            Start Tracking
-          </a>
+          <motion.div className="hero-actions" variants={item}>
+            <a href="/register" className="hero-primary-btn">
+              Start Tracking
+            </a>
 
-          <a href="/login" className="hero-secondary-btn">
-            Login
-          </a>
+            <a href="/login" className="hero-secondary-btn">
+              Login
+            </a>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </section>
+      </section>
+
+      <HeroShowcase />
+    </>
   );
 }
 

@@ -6,10 +6,12 @@ import Input from "../ui/Input";
 import Select from "../ui/Select";
 import { APPLICATION_TYPES, STATUSES } from "../../utils/constants";
 import { isValidUrl } from "../../utils/format";
+import useRoles from "../../hooks/useRoles";
 
 const EMPTY_VALUES = {
   companyId: "",
   role: "",
+  location: "",
   type: "internship",
   status: "applied",
   appliedDate: "",
@@ -21,6 +23,7 @@ const EMPTY_VALUES = {
 };
 
 const OPTIONAL_FIELDS = [
+  "location",
   "appliedDate",
   "deadline",
   "source",
@@ -80,6 +83,7 @@ function ApplicationForm({
 }) {
   const [values, setValues] = useState({ ...EMPTY_VALUES, ...initialValues });
   const [errors, setErrors] = useState({});
+  const roles = useRoles();
 
   const hasNoCompanies =
     !isLoadingCompanies && !companiesError && companies.length === 0;
@@ -149,7 +153,7 @@ function ApplicationForm({
             )}
           </div>
 
-          <div className="sm:col-span-2">
+                    <div className="sm:col-span-2">
             <Input
               label="Role *"
               name="role"
@@ -157,8 +161,16 @@ function ApplicationForm({
               onChange={handleChange}
               error={errors.role}
               maxLength={100}
-              placeholder="e.g. SDE Intern"
+              list="role-options"
+              placeholder="Pick a suggestion or type your own"
             />
+            <datalist id="role-options">
+              {roles
+                .filter((role) => role !== "Other")
+                .map((role) => (
+                  <option key={role} value={role} />
+                ))}
+            </datalist>
           </div>
 
           <div className={isEdit ? "sm:col-span-2" : ""}>
@@ -209,6 +221,14 @@ function ApplicationForm({
             className="[color-scheme:dark]"
           />
 
+                    <Input
+            label="Location"
+            name="location"
+            value={values.location}
+            onChange={handleChange}
+            placeholder="e.g. Bengaluru, Remote"
+          />
+
           <Input
             label="Source"
             name="source"
@@ -225,16 +245,14 @@ function ApplicationForm({
             placeholder="e.g. v3-backend"
           />
 
-          <div className="sm:col-span-2">
-            <Input
-              label="Job link"
-              name="jobLink"
-              value={values.jobLink}
-              onChange={handleChange}
-              error={errors.jobLink}
-              placeholder="https://..."
-            />
-          </div>
+          <Input
+            label="Job link"
+            name="jobLink"
+            value={values.jobLink}
+            onChange={handleChange}
+            error={errors.jobLink}
+            placeholder="https://..."
+          />
 
           <div className="sm:col-span-2">
             <label

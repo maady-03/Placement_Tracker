@@ -70,6 +70,7 @@ function EditApplication() {
           initialValues={{
             companyId: application.company?._id ?? "",
             role: application.role,
+            location: application.location ?? "",
             type: application.type,
             appliedDate: toDateInputValue(application.appliedDate),
             deadline: toDateInputValue(application.deadline),

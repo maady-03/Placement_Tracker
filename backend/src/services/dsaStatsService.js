@@ -49,26 +49,55 @@ const getStats = async (userId) => {
         profile = await syncUser(userId);
     }
 
+    // --- CORRECTED STREAK LOGIC ---
     let currentStreak = 0, maxStreak = 0, tempStreak = 0;
+    let lastDate = null;
     const activity = profile.activity || [];
+    
+    // Sort ascending (oldest to newest) for streak calculation
     const sortedActivity = [...activity].sort((a, b) => new Date(a.date) - new Date(b.date));
     
     for (let i = 0; i < sortedActivity.length; i++) {
-        if (sortedActivity[i].count > 0) {
-            tempStreak++;
-            if (tempStreak > maxStreak) maxStreak = tempStreak;
+        if (sortedActivity[i].count === 0) continue; // Skip empty days
+
+        const currentDate = new Date(sortedActivity[i].date);
+
+        if (lastDate) {
+            // Calculate difference in days
+            const diffTime = Math.abs(currentDate - lastDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) {
+                tempStreak++; // Consecutive day
+            } else {
+                tempStreak = 1; // Streak broken, reset to 1
+            }
         } else {
-            tempStreak = 0;
+            tempStreak = 1; // First day
+        }
+
+        if (tempStreak > maxStreak) maxStreak = tempStreak;
+        lastDate = currentDate;
+    }
+
+    // Check if the current streak is still active (last submission was today or yesterday)
+    if (sortedActivity.length > 0) {
+        const lastActiveDate = new Date(sortedActivity[sortedActivity.length - 1].date);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        
+        const diffTime = Math.abs(today - lastActiveDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 1) {
+            currentStreak = tempStreak;
         }
     }
-    if (sortedActivity.length > 0 && sortedActivity[sortedActivity.length - 1].count > 0) {
-        currentStreak = tempStreak;
-    }
+    // ------------------------------
 
     const totals = { solved: 0, easy: 0, medium: 0, hard: 0, contests: 0 };
     const p = profile.platforms;
     
-    // Include all 4 platforms in totals
     ['leetcode', 'codeforces', 'codechef', 'gfg'].forEach(k => {
         if (p[k] && p[k].status === 'ok') {
             totals.solved += p[k].solved || 0;

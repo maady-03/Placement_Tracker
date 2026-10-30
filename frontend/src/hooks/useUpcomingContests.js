@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUpcomingContests } from "../api/dsa";
+import { getUpcomingContests } from "../api/contests";
 
 const PLATFORMS = ["leetcode", "codeforces", "codechef"];
 

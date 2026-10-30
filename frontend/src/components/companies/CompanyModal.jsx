@@ -4,7 +4,7 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import { isValidUrl } from "../../utils/format";
 
-const FIELDS = ["name", "website", "location", "industry", "notes"];
+const FIELDS = ["name", "website", "industry", "notes"];
 const NOTES_LIMIT = 500;
 
 function CompanyForm({ company, onClose, onSubmit }) {
@@ -75,18 +75,12 @@ function CompanyForm({ company, onClose, onSubmit }) {
         placeholder="https://..."
       />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input
-          label="Location"
-          name="location"
-          value={values.location}
-          onChange={handleChange}
-        />
-        <Input
-          label="Industry"
-          name="industry"
-          value={values.industry}
-          onChange={handleChange}
-        />
+              <Input
+        label="Industry"
+        name="industry"
+        value={values.industry}
+        onChange={handleChange}
+      />
       </div>
 
       <div>

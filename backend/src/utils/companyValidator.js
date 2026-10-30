@@ -26,9 +26,13 @@ function validateCompany(data, { partial = false } = {}) {
         }
     }
 
-    if (data.location !== undefined && typeof data.location !== 'string') {
-        throw new Error('Location must be a string');
+    if (data.logo !== undefined && data.logo !== null && data.logo !== '') {
+        if (!validator.isURL(data.logo)) {
+            throw new Error('Invalid logo URL');
+        }
     }
+
+    // REMOVED: Location validation block
 
     if (data.industry !== undefined && typeof data.industry !== 'string') {
         throw new Error('Industry must be a string');

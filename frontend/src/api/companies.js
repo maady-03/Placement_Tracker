@@ -9,3 +9,5 @@ export const updateCompany = (id, payload) =>
   apiClient.put(`/api/companies/${id}`, payload);
 
 export const deleteCompany = (id) => apiClient.delete(`/api/companies/${id}`);
+
+export const getCompany = (id) => apiClient.get(`/api/companies/${id}`);

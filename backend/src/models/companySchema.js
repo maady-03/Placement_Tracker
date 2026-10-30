@@ -9,8 +9,9 @@ const companySchema = new Schema({
         trim: true,
         maxlength: 100,
     },
+    logo: { type: String, trim: true },
     website:  { type: String, trim: true },
-    location: { type: String, trim: true },
+    // REMOVED: location
     industry: { type: String, trim: true },
     notes:    { type: String, maxlength: 500 },
     createdBy: {
