@@ -59,7 +59,13 @@ const userSchema = new Schema({
         cgpa:           { type: Number, min: 0, max: 10 },
         backlogs:       { type: Number, min: 0 },
 
-        skills:         { type: [String], default: [] },
+        
+                // Old: skills: { type: [String], default: [] },
+        // New:
+        skills: [{
+            name: { type: String, required: true },
+            category: { type: String, default: 'Tech' } // e.g., 'Tech', 'Outreach', 'Design'
+        }],
         targetRoles:    { type: [String], default: [] },
 
         links: {

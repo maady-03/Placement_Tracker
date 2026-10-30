@@ -9,7 +9,8 @@ const companyRoutes = require('./src/routes/companyRoutes');
 const applicationRoutes = require('./src/routes/applicationRoutes');
 const dashboardRoutes = require('./src/routes/dashboardRoutes');
 const dsaRoutes = require('./src/routes/dsaRoutes');
-const contestRoutes = require('./src/routes/contestRoutes'); // <--- ADDED
+const contestRoutes = require('./src/routes/contestRoutes');
+const projectRoutes = require('./src/routes/projectRoutes');
 
 const app = express();
 
@@ -26,7 +27,8 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/dsa', dsaRoutes);
-app.use('/api/contests', contestRoutes); // <--- ADDED
+app.use('/api/contests', contestRoutes);
+app.use('/api/projects', projectRoutes);
 
 app.use(errorHandler);
 

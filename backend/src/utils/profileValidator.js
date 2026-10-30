@@ -2,7 +2,7 @@ const validator = require('validator');
 
 const URL_FIELDS = ['github', 'linkedin', 'leetcode', 'portfolio'];
 
-function validateProfile(data){
+function validateProfile(data) {
     if (!data || typeof data !== 'object' || Array.isArray(data)) {
         throw new Error('Invalid profile payload');
     }
@@ -26,12 +26,16 @@ function validateProfile(data){
         }
     }
 
-    if (data.skills !== undefined && !Array.isArray(data.skills)) {
-        throw new Error('Skills must be an array');
-    }
-
-    if (data.skills !== undefined && !Array.isArray(data.skills)) {
-        throw new Error('Skills must be an array');
+    // UPDATED: Validate categorized skills
+    if (data.skills !== undefined) {
+        if (!Array.isArray(data.skills)) {
+            throw new Error('Skills must be an array');
+        }
+        for (const skill of data.skills) {
+            if (typeof skill !== 'object' || !skill.name) {
+                throw new Error('Each skill must be an object with a name');
+            }
+        }
     }
 
     if (data.targetRoles !== undefined && !Array.isArray(data.targetRoles)) {
