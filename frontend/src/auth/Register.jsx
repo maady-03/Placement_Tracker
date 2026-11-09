@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../api/config";
 import { motion } from "framer-motion";
 import useAuth from "../hooks/useAuth";
+import BackToHome from "../components/BackToHome";
 import "./Auth.css";
 
 const container = {
@@ -178,7 +179,7 @@ function Register() {
         );
       }
 
-            try {
+      try {
         await login(formData.email, password);
         navigate("/onboarding");
       } catch {
@@ -193,6 +194,7 @@ function Register() {
 
   return (
     <div className="register-page">
+      <BackToHome />
 
       {/* Top liquid design */}
       <svg
@@ -258,15 +260,12 @@ function Register() {
         initial="hidden"
         animate="show"
       >
-
         <div className="register-brand">
           <span className="brand-dot" />
           <span>Placement Tracker</span>
         </div>
 
-        <h2 className="register-heading">
-          Create your account
-        </h2>
+        <h2 className="register-heading">Create your account</h2>
 
         <p className="register-subtext">
           Start tracking your placement preparation.
@@ -279,24 +278,14 @@ function Register() {
           animate="show"
           onSubmit={handleRegister}
         >
-
           {/* Overall error */}
-          {formError && (
-            <p className="auth-form-error">
-              ⚠ {formError}
-            </p>
-          )}
+          {formError && <p className="auth-form-error">⚠ {formError}</p>}
 
           {/* First + Last name */}
-          <motion.div
-            className="form-row"
-            variants={field}
-          >
-
+          <motion.div className="form-row" variants={field}>
             <div className="form-group">
               <label htmlFor="firstName">
-                First name{" "}
-                <span className="required">*</span>
+                First name <span className="required">*</span>
               </label>
 
               <input
@@ -306,24 +295,17 @@ function Register() {
                 autoComplete="given-name"
                 value={formData.firstName}
                 onChange={handleChange}
-                className={
-                  errors.firstName
-                    ? "input-error"
-                    : ""
-                }
+                className={errors.firstName ? "input-error" : ""}
               />
 
               {errors.firstName && (
-                <span className="field-error">
-                  {errors.firstName}
-                </span>
+                <span className="field-error">{errors.firstName}</span>
               )}
             </div>
 
             <div className="form-group">
               <label htmlFor="lastName">
-                Last name{" "}
-                <span className="required">*</span>
+                Last name <span className="required">*</span>
               </label>
 
               <input
@@ -333,31 +315,19 @@ function Register() {
                 autoComplete="family-name"
                 value={formData.lastName}
                 onChange={handleChange}
-                className={
-                  errors.lastName
-                    ? "input-error"
-                    : ""
-                }
+                className={errors.lastName ? "input-error" : ""}
               />
 
               {errors.lastName && (
-                <span className="field-error">
-                  {errors.lastName}
-                </span>
+                <span className="field-error">{errors.lastName}</span>
               )}
             </div>
-
           </motion.div>
 
           {/* Username */}
-          <motion.div
-            className="form-group"
-            variants={field}
-          >
-
+          <motion.div className="form-group" variants={field}>
             <label htmlFor="username">
-              Username{" "}
-              <span className="required">*</span>
+              Username <span className="required">*</span>
             </label>
 
             <input
@@ -367,30 +337,18 @@ function Register() {
               autoComplete="username"
               value={formData.username}
               onChange={handleChange}
-              className={
-                errors.username
-                  ? "input-error"
-                  : ""
-              }
+              className={errors.username ? "input-error" : ""}
             />
 
             {errors.username && (
-              <span className="field-error">
-                {errors.username}
-              </span>
+              <span className="field-error">{errors.username}</span>
             )}
-
           </motion.div>
 
           {/* Email */}
-          <motion.div
-            className="form-group"
-            variants={field}
-          >
-
+          <motion.div className="form-group" variants={field}>
             <label htmlFor="email">
-              Email{" "}
-              <span className="required">*</span>
+              Email <span className="required">*</span>
             </label>
 
             <input
@@ -400,30 +358,18 @@ function Register() {
               autoComplete="email"
               value={formData.email}
               onChange={handleChange}
-              className={
-                errors.email
-                  ? "input-error"
-                  : ""
-              }
+              className={errors.email ? "input-error" : ""}
             />
 
             {errors.email && (
-              <span className="field-error">
-                {errors.email}
-              </span>
+              <span className="field-error">{errors.email}</span>
             )}
-
           </motion.div>
 
           {/* Password */}
-          <motion.div
-            className="form-group"
-            variants={field}
-          >
-
+          <motion.div className="form-group" variants={field}>
             <label htmlFor="password">
-              Password{" "}
-              <span className="required">*</span>
+              Password <span className="required">*</span>
             </label>
 
             <div
@@ -433,14 +379,9 @@ function Register() {
                   : "input-with-action"
               }
             >
-
               <input
                 id="password"
-                type={
-                  showPassword
-                    ? "text"
-                    : "password"
-                }
+                type={showPassword ? "text" : "password"}
                 name="password"
                 autoComplete="new-password"
                 value={password}
@@ -459,58 +400,27 @@ function Register() {
               <button
                 type="button"
                 className="input-toggle"
-                onClick={() =>
-                  setShowPassword((v) => !v)
-                }
+                onClick={() => setShowPassword((v) => !v)}
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
-
             </div>
 
             <div className="strength-bar">
-              <span
-                className={
-                  strength >= 1
-                    ? "filled"
-                    : ""
-                }
-              />
-
-              <span
-                className={
-                  strength >= 2
-                    ? "filled"
-                    : ""
-                }
-              />
-
-              <span
-                className={
-                  strength >= 3
-                    ? "filled"
-                    : ""
-                }
-              />
+              <span className={strength >= 1 ? "filled" : ""} />
+              <span className={strength >= 2 ? "filled" : ""} />
+              <span className={strength >= 3 ? "filled" : ""} />
             </div>
 
             {errors.password && (
-              <span className="field-error">
-                {errors.password}
-              </span>
+              <span className="field-error">{errors.password}</span>
             )}
-
           </motion.div>
 
           {/* Confirm password */}
-          <motion.div
-            className="form-group"
-            variants={field}
-          >
-
+          <motion.div className="form-group" variants={field}>
             <label htmlFor="confirmPassword">
-              Confirm password{" "}
-              <span className="required">*</span>
+              Confirm password <span className="required">*</span>
             </label>
 
             <div
@@ -520,21 +430,14 @@ function Register() {
                   : "input-with-action"
               }
             >
-
               <input
                 id="confirmPassword"
-                type={
-                  showConfirm
-                    ? "text"
-                    : "password"
-                }
+                type={showConfirm ? "text" : "password"}
                 name="confirmPassword"
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => {
-                  setConfirmPassword(
-                    e.target.value
-                  );
+                  setConfirmPassword(e.target.value);
 
                   setErrors((previous) => ({
                     ...previous,
@@ -548,21 +451,15 @@ function Register() {
               <button
                 type="button"
                 className="input-toggle"
-                onClick={() =>
-                  setShowConfirm((v) => !v)
-                }
+                onClick={() => setShowConfirm((v) => !v)}
               >
                 {showConfirm ? "Hide" : "Show"}
               </button>
-
             </div>
 
             {errors.confirmPassword && (
-              <span className="field-error">
-                {errors.confirmPassword}
-              </span>
+              <span className="field-error">{errors.confirmPassword}</span>
             )}
-
           </motion.div>
 
           {/* Submit */}
@@ -572,20 +469,13 @@ function Register() {
             variants={field}
             disabled={loading}
           >
-            {loading
-              ? "Creating Account..."
-              : "Create Account"}
+            {loading ? "Creating Account..." : "Create Account"}
           </motion.button>
-
         </motion.form>
 
         <p className="register-login-link">
-          Already have an account?{" "}
-          <Link to="/login">
-            Login
-          </Link>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
-
       </motion.div>
     </div>
   );

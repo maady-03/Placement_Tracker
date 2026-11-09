@@ -1,8 +1,9 @@
+// src/components/ui/Modal.jsx
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
-function Modal({ open, onClose, title, children }) {
+function Modal({ open, onClose, title, children, size = "sm:max-w-lg" }) {
   useEffect(() => {
     if (!open) return;
 
@@ -32,7 +33,7 @@ function Modal({ open, onClose, title, children }) {
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative flex max-h-[90vh] w-full flex-col rounded-t-xl border border-line bg-surface sm:max-w-lg sm:rounded-xl"
+        className={`relative flex max-h-[90vh] w-full flex-col rounded-t-xl border border-line bg-surface ${size} sm:rounded-xl`}
       >
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 className="text-sm font-semibold text-ink">{title}</h2>

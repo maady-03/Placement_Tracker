@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import BackToHome from "../components/BackToHome";
 import "./Auth.css";
 
 const contentFade = {
@@ -92,6 +93,8 @@ function Login() {
 
   return (
     <div className="login-page">
+      <BackToHome />
+
       <motion.div
         className="login-visual"
         variants={visualFade}

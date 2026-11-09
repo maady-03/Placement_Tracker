@@ -2,7 +2,6 @@ const Project = require('../models/projectSchema');
 const ApiError = require('../utils/ApiError');
 const { validateProject } = require('../utils/projectValidator');
 
-// Only allow these fields to be saved/updated
 const ALLOWED_FIELDS = [
     'title', 'description', 'techStack', 
     'liveUrl', 'githubUrl', 'imageUrl', 'isFeatured'
@@ -15,6 +14,11 @@ const createProject = async (userId, data) => {
         throw new ApiError(400, err.message);
     }
 
+    // Unset other featured projects on create
+    if (data.isFeatured) {
+        await Project.updateMany({ user: userId }, { isFeatured: false });
+    }
+
     const payload = { user: userId };
     for (const key of ALLOWED_FIELDS) {
         if (data[key] !== undefined) payload[key] = data[key];
@@ -24,8 +28,19 @@ const createProject = async (userId, data) => {
 };
 
 const getUserProjects = async (userId) => {
-    // Sort by isFeatured (true first), then by newest created
-    return Project.find({ user: userId }).sort({ isFeatured: -1, createdAt: -1 });
+    const projects = await Project.find({ user: userId })
+        .sort({ isFeatured: -1, createdAt: -1 })
+        .lean();
+
+    // Normalize old flat techStack arrays to the new object format
+    return projects.map(p => {
+        if (Array.isArray(p.techStack)) {
+            p.techStack = { frontend: [], backend: [], database: [], deployment: [], other: p.techStack };
+        } else if (!p.techStack) {
+            p.techStack = { frontend: [], backend: [], database: [], deployment: [], other: [] };
+        }
+        return p;
+    });
 };
 
 const updateProject = async (userId, projectId, data) => {
@@ -35,13 +50,21 @@ const updateProject = async (userId, projectId, data) => {
         throw new ApiError(400, err.message);
     }
 
+    // Unset other featured projects on update
+    if (data.isFeatured === true) {
+        await Project.updateMany(
+            { user: userId, _id: { $ne: projectId } }, 
+            { isFeatured: false }
+        );
+    }
+
     const updates = {};
     for (const key of ALLOWED_FIELDS) {
         if (data[key] !== undefined) updates[key] = data[key];
     }
 
     const project = await Project.findOneAndUpdate(
-        { _id: projectId, user: userId }, // Scoped to the user for security
+        { _id: projectId, user: userId },
         { $set: updates },
         { new: true, runValidators: true }
     );

@@ -3,15 +3,14 @@ const ApiError = require('../utils/ApiError');
 const { validateProfile } = require('../utils/profileValidator');
 
 const ALLOWED_FIELDS = [
-    'college', 'branch', 'graduationYear', 'cgpa',
-    'backlogs', 'skills', 'targetRoles', 'links', 'about',
+    'college', 'branch', 'graduationYear', 'cgpa', 'backlogs', 
+    'avatar', // <-- NEW
+    'skills', 'targetRoles', 'links', 'about'
 ];
 
 const getProfile = async (userId) => {
     const user = await User.findById(userId).select('-password');
-    if (!user) {
-        throw new ApiError(404, 'User not found');
-    }
+    if (!user) throw new ApiError(404, 'User not found');
     return user;
 };
 
@@ -23,21 +22,15 @@ const updateProfile = async (userId, data) => {
     }
 
     const user = await User.findById(userId);
-    if (!user) {
-        throw new ApiError(404, 'User not found');
-    }
+    if (!user) throw new ApiError(404, 'User not found');
 
     const currentProfile = user.toObject().profile || {};
     const mergedProfile = { ...currentProfile };
 
     for (const key of ALLOWED_FIELDS) {
         if (data[key] === undefined) continue;
-
         if (key === 'links') {
-            mergedProfile.links = {
-                ...(currentProfile.links || {}),
-                ...data.links,
-            };
+            mergedProfile.links = { ...(currentProfile.links || {}), ...data.links };
         } else {
             mergedProfile[key] = data[key];
         }
