@@ -6,20 +6,23 @@ const register = asyncHandler(async (req, res) => {
     res.status(201).json({ message: 'User registered successfully.' });
 });
 
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000
+};
+
 const login = asyncHandler(async (req, res) => {
     const token = await authService.login(req.body?.email, req.body?.password);
 
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: false, // Important for localhost
-        sameSite: 'lax',
-        maxAge: 24 * 60 * 60 * 1000 // 1 day
-    });
+    res.cookie('token', token, cookieOptions);
+
     res.status(200).json({ message: 'Login Successfully' });
 });
 
 const logout = asyncHandler(async (req, res) => {
-    res.clearCookie('token');
+    res.clearCookie('token', cookieOptions);
     res.status(200).json({ message: 'Logged out successfully' });
 });
 
